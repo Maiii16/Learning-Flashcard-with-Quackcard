@@ -1,0 +1,145 @@
+{% extends "layout.html" %}
+
+{% block title %}
+   {{folder}}
+{% endblock %}
+
+{% block main %}
+        <form action="/cards" method="post">
+        <div class="container">
+            <b style="font-size: 2rem;">Folder: {{folder}}
+            <button type="submit" name="out" style="background-color: white; border: white; font-size: 1rem;"><i class="bi bi-door-open"></i>Back</button>
+            </b>
+            <div class="row row-cols-1 row-cols-md-3 g-4" style="margin-top: -200px;">
+                {% for row in rows: %}
+                <div class="col">
+                    {% if rows.index(row) == 0: %}
+                    <div class="flip-card" id="card1">
+                    {% else: %}
+                    <div class="flip-card" id="card{{row['cards_id']}}">
+                    {% endif %}
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card border-dark mb-3" style="width: 18rem; min-height: 10rem;" >
+                                    <div class="card-body text-dark d-flex">
+                                        <p class="card-text m-auto" style="font-size: 1.5rem;">{{row['front']}}</p>
+                                    </div>
+                                    <div class="card-footer bg-transparent" id="bottom" style="border: white;">
+                                        <button type="button" onclick="edit({{row['cards_id']}}, '{{row['front']}}', '{{row['back']}}')" data-bs-toggle="modal" data-bs-target="#myModal"
+                                        style="background-color: white; border: white;"><i class="bi bi-pencil-fill"></i></button>
+                                        <div>
+                                        {% if rows.index(row) == 0: %}
+                                        <button type="button" onclick="flip(1)" style="background-color: white; border: white;"><i class="bi bi-arrow-repeat"></i></button>
+                                        {% else: %}
+                                        <button type="button" value="{{row['cards_id']}}" id="id" name="id" onclick="flip(value)" style="background-color: white; border: white;"><i class="bi bi-arrow-repeat"></i></button>
+                                        {% endif %}
+                                        </div>
+                                        <form method="post">
+                                            <input type="hidden" value="{{row['cards_id']}}" name="delete_id" id="id">
+                                            <button type="submit" name="delete" style="background-color: white; border: white;"><i class="bi bi-trash-fill" style="color: black;"></i></button>
+                                        </form>
+                                   </div>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="card border-dark mb-3" style="width: 18rem; min-height: 10rem;">
+                                    <div class="card-body text-dark d-flex">
+                                        <p class="card-text m-auto" style="font-size: 1.5rem;">{{row['back']}}</p>
+                                    </div>
+                                    <div class="card-footer bg-transparent" id="bottom" name="id" style="border: white;">
+                                        <button type="button" onclick="edit({{row['cards_id']}}, '{{row['front']}}', '{{row['back']}}')" data-bs-toggle="modal" data-bs-target="#myModal"
+                                        style="background-color: white; border: white;"><i class="bi bi-pencil-fill"></i></button>
+                                        <div>
+                                        {% if rows.index(row) == 0: %}
+                                        <button type="button" onclick="flip(1)" style="background-color: white; border: white;"><i class="bi bi-arrow-repeat"></i></button>
+                                        {% else: %}
+                                        <button type="button" value="{{row['cards_id']}}" id="id" onclick="flip({{row['cards_id']}})" style="background-color: white; border: white;"><i class="bi bi-arrow-repeat"></i></button>
+                                        {% endif %}
+                                        </div>
+                                        <form method="post">
+                                            <input type="hidden" value="{{row['cards_id']}}" name="delete_id">
+                                            <button type="submit" name="delete" style="background-color: white; border: white;"><i class="bi bi-trash-fill" style="color: black;"></i></button>
+                                        </form>
+                                   </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                <div class="col">
+                    <div class="card border-dark mb-3" style="width: 18rem; min-height: 10rem;">
+                        <div class="card-body text-dark">
+                            <button type="button" onclick="edit('', '', '')" data-bs-toggle="modal" data-bs-target="#myModal"
+                            style="font-size: 5rem; background-color: white; border: white; color: black;">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </form>
+
+        <div  class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel">
+            <div class="modal-dialog" style="position: absolut; top: 25%;">
+                <form method="post">
+                <div class="flip-card" id="addcard">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Front</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <textarea name="front" id="front" rows="5" style="width: 100%;" placeholder="Enter the text for the front of the card here."></textarea>
+                                </div>
+                                <div class="modal-footer">
+                                    <input type="hidden" name="index" id="index">
+                                    <button type="button" onclick="flip(0)" style="background-color: white; border: white; font-size: 2rem;"><i class="bi bi-arrow-repeat" style=""></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flip-card-back">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Back</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <textarea type="text" name="back" id="back" rows="5" style="width: 100%;" placeholder="Enter the text for the back of the card here."></textarea>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" onclick="flip(0)" style="background-color: white; border: white; font-size: 2rem;"><i class="bi bi-arrow-repeat"></i></button>
+                                    <button type="submit" style="position: absolute; background-color: white; border: white; font-size: 2rem; left: 0;">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </form>
+            </div>
+        </div>
+
+    <script>
+        function edit(index, front, back) {
+            document.getElementById("index").value = index
+            document.getElementById("front").value = front
+            document.getElementById("back").value = back
+        }
+
+        function flip(value) {
+            if(value == 0) {
+                document.querySelector("#addcard").classList.toggle('flipped')
+            }
+            else if(value == 1) {
+                document.querySelector("#card1").classList.toggle('flipped')
+            }
+            else {
+                id = "#card" + value
+                document.querySelector(id).classList.toggle('flipped')
+            }
+        }
+
+    </script>
+
+{% endblock %}

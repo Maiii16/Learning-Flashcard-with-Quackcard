@@ -1,0 +1,87 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Decks
+{% endblock %}
+
+{% block main %}
+    <form action="/decks" method="post">
+        <div class="container">
+            <div class="row row-cols-1 row-cols-md-3 g-4" style="margin-top: -240px;">
+                {% for row in rows: %}
+                <div class="col">
+                  <div class="containercard">
+                      <div class="decks">
+                          <div class="card-body text-dark">
+                              <h5 class="card-title">
+                                <form method="post">
+                                    <input type="hidden" value="{{row['id']}}" name="id_edit">
+                                    <input class="mb-3" autocomplete="off" id="folder{{row['id']}}" name="folder_edit" value="{{row['folder']}}" type="text" style="border: white; text-align: center;">
+                                    <button type="submit" id="edit{{row['id']}}" style="background-color: white; border-radius: 5px;" hidden="true">ok</button>
+                                </form>
+                              </h5>
+                          </div>
+                          <div class="card-footer bg-transparent" id="bottom" style="border: white;">
+                            <button type="button" onclick="hide({{row['id']}})" style="background-color: white; border: white;"><i class="bi bi-pencil-fill"></i></button>
+
+                            <form method="post" style="width: 50%;">
+                                <input type="hidden" value="{{row['folder']}}" name="folder_name">
+                                <button type="submit" style="background-color: white; border: white;"><i class="bi bi-door-open-fill"></i></button>
+                            </form>
+
+                            <form method="post" style="width: 50%;">
+                                <input type="hidden" value="{{row['id']}}" name="delete_id">
+                                <button type="submit" name="delete" style="background-color: white; border: white;"><i class="bi bi-trash-fill" style="color: black;"></i></button>
+                            </form>
+                         </div>
+                      </div>
+                      <div class="cardshadow"></div>
+                      <div class="cardshadow" style="margin-top: 20px; margin-left: 20px; z-index: 0;"></div>
+                  </div>
+                </div>
+                {% endfor %}
+                <div class="col">
+                <div class="containercard">
+                    <div class="decks">
+                        <form method="post">
+                        <div class="card-body text-dark">
+                            <h5 class="card-title">
+                                <input autocomplete="off" name="folder" value="Folder name" type="text" onkeydown="return checkEnter(event);" style="border: white; text-align: center;">
+                            </h5>
+                            <button type="submit" style="background-color: white; border: white; font-size: 4rem;">+</button>
+                        </div>
+                        </form>
+                    </div>
+                    <div class="cardshadow"></div>
+                    <div class="cardshadow" style="margin-top: 20px; margin-left: 20px; z-index: 0;"></div>
+                </div>
+              </div>
+            </div>
+      </div>
+    </form>
+
+
+    <script>
+        function hide(index) {
+            fol = "folder" + index
+            id = "edit" + index
+            element = document.getElementById(id);
+            hidden = element.getAttribute("hidden");
+
+            if (hidden) {
+                document.getElementById(fol).style = "border: 2px solid; border-radius: 5px;";
+                document.getElementById(fol).focus();
+                element.removeAttribute("hidden");
+            } else {
+                document.getElementById(fol).style = "border: white; text-align: center;";
+                element.setAttribute("hidden", "hidden");
+            }
+        }
+
+        function checkEnter(event) {
+            if (event.keyCode == 13) {
+                return false;
+            }
+        }
+    </script>
+{% endblock %}

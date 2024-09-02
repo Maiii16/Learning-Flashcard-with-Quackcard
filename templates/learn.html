@@ -1,0 +1,94 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Learn
+{% endblock %}
+
+{% block header %}
+    <style>
+        body {
+            overflow : hidden;
+        }
+    </style>
+{% endblock %}
+
+{% block main %}
+    <form action="/learn" method="post">
+      {% if not cards %}
+      <div class="mb-5">
+        <select class="mx-auto border-dark" style="height: 2.5rem; width: 20rem; border-radius: 5px; border: 2px solid;" name="folder">
+            <option disabled selected>Folder</option>
+            {% for row in rows %}
+               {% if cards and row["folder"] == cards[0]["folder"] %}
+                   <option selected>{{cards[0]["folder"]}}</option>
+               {% elif row["folder"] == fol %}
+                   <option selected>{{fol}}</option>
+               {% else %}
+                   <option value="{{row['folder']}}">{{row["folder"]}}</option>
+               {% endif %}
+            {% endfor %}
+        </select>
+        <button type="submit" name="submit" style="background-color: white; border-radius: 5px; margin-top: 1rem;">Start Learning!</button>
+    </div>
+    {% endif %}
+    {% if cards == [] and fol != "Folder" %}
+        <p class="mx-auto">Currently no card.</p>
+    {% elif cards %}
+        <button class="mb-4" type="submit" style="background-color: white; border: white; font-size: 1rem;" name="again"><i class="bi bi-arrow-counterclockwise"></i> Again</button>
+        <button class="mb-4" type="submit" style="background-color: white; border: white; font-size: 1rem;" name="random"><i class="bi bi-shuffle"></i> Shuffle</button>
+        <button class="mb-4" type="submit" style="background-color: white; border: white; font-size: 1rem;" name="normal"><i class="bi bi-sliders"></i> Normal</button>
+        <button class="mb-4" type="submit" style="background-color: white; border: white; font-size: 1rem;" name="out"><i class="bi bi-suit-heart"></i> Out</button>
+
+        <div class="flip-card" id="addcard" style="font-size: 2rem;">
+        <div class="flip-card-inner">
+            <div class="flip-card-front">
+                <div class="card border-dark mx-auto" style="max-width: 50%; height: 20rem;">
+                    <div class="card-body text-dark d-flex">
+                      {% if index != 0 %}
+                      <button type="submit" style="background-color: white; border: white;" name="prev"><</button>
+                      {% endif %}
+                      <div class="mx-auto d-flex" style="width: 85%; margin: 3.5rem;" type="button" onclick="flip()">
+                      {% if random == "on" %}
+                      <p class="card-text m-auto" style="width: 100%;">{{cards[shuffle[index]]["front"]}}</p>
+                      {% else %}
+                      <p class="card-text m-auto" style="width: 100%;">{{cards[index]["front"]}}</p>
+                      {% endif %}
+                      </div>
+                      <input type="hidden" value="{{index}}" name="index">
+                      {% if index != (cards|length - 1) %}
+                      <button type="submit" style="background-color: white; border: white;" name="next">></button>
+                      {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="flip-card-back">
+                <div class="card border-dark mx-auto" style="max-width: 50%; height: 20rem;">
+                    <div class="card-body text-dark d-flex">
+                      {% if index != 0 %}
+                      <button type="submit" style="background-color: white; border: white;" name="prev"><</button>
+                      {% endif %}
+                      <div class="mx-auto d-flex" style="width: 85%; margin: 3.5rem;" type="button" onclick="flip()">
+                      {% if random == "on" %}
+                      <p class="card-text m-auto" style="width: 100%;">{{cards[shuffle[index]]["back"]}}</p>
+                      {% else %}
+                      <p class="card-text m-auto" style="width: 100%;">{{cards[index]["back"]}}</p>
+                      {% endif %}
+                      </div>
+                      <input type="hidden" value="{{index}}" name="index">
+                      {% if index != (cards|length - 1) %}
+                      <button type="submit" style="background-color: white; border: white;" name="next">></button>
+                      {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    {% endif %}
+    </form>
+
+    <script>
+      function flip() {
+          document.querySelector("#addcard").classList.toggle('flipped');
+      }
+    </script>
+{% endblock %}

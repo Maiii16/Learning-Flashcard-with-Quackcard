@@ -1,0 +1,135 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    List
+{% endblock %}
+
+
+{% block main %}
+    <form action="/list" method="post">
+        <div class="mb-5">
+            <select class="mx-auto border-dark" style="height: 2.5rem; width: 20rem; border-radius: 5px; border: 2px solid;" name="folder">
+                <option disabled selected>Folder</option>
+                {% for row in rows %}
+                   {% if cards and row["folder"] == cards[0]["folder"] %}
+                       <option selected>{{cards[0]["folder"]}}</option>
+                   {% elif row["folder"] == fol %}
+                       <option selected>{{fol}}</option>
+                   {% else %}
+                       <option value="{{row['folder']}}">{{row["folder"]}}</option>
+                   {% endif %}
+                {% endfor %}
+            </select>
+            <button type="submit" name="submit" style="background-color: white; border-radius: 5px; margin-top: 1rem;">Quack!</button>
+            {% if cards or (cards == [] and fol != "Folder") %}
+            <button type="button" onclick="edit('', '', '')" data-bs-toggle="modal" data-bs-target="#myModal"
+                            style="background-color: white; border-radius: 5px;">Add </button>
+            {% endif %}
+        </div>
+        {% if cards == [] and fol != "Folder" %}
+            <p class="mx-auto">Currently no card.</p>
+        {% elif cards %}
+        <table class="table mx-auto mb-5" style="width: 90%;">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col" class="text-start">Front</th>
+                <th scope="col" class="text-start">Back</th>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for card in cards: %}
+              <tr>
+                <th scope="row">{{cards.index(card) + 1}}</th>
+                <td class="text-start">{{card["front"]}}</td>
+                <td class="text-start">{{card["back"]}}</td>
+                <td class="text-end">
+                    <form method="post">
+                        <button type="button" onclick="edit({{card['cards_id']}}, '{{card['front']}}', '{{card['back']}}')" data-bs-toggle="modal" data-bs-target="#myModal"
+                        style="background-color: white; border: white;"><i class="bi bi-pencil-fill"></i></button>
+                        <input type="hidden" value="{{card['cards_id']}}" name="delete_id">
+                        <button type="submit" name="delete" style="background-color: white; border: white;"><i class="bi bi-trash-fill" style="color: black;"></i></button>
+                    </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+
+          <button type="button" onclick="hide()" style="background-color: white; border: white; position: absolute; left: 5%; text-decoration: underline;">Do y want to write a text?</button>
+          <form hidden method="post" id="myform">
+            {% if text != None: %}
+            <textarea class="mb-3" rows="10" name="text" style="width: 80%; margin-top: 3rem; border: 2px solid;" placeholder="Let's use all of the new words above.">{{text}}</textarea>
+            {% else: %}
+            <textarea class="mb-3" rows="10" name="text" style="width: 80%; margin-top: 3rem; border: 2px solid;" placeholder="Let's use all of the new words above."></textarea>
+            {% endif %}
+            <div><button type="submit" style="background-color: white; border-radius: 5px; left: 100%;">Save</button></div>
+          </form>
+          {% endif %}
+    </form>
+
+    <div  class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" style="position: absolut; top: 25%;">
+            <form method="post">
+            <div class="flip-card" id="addcard">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" style="color: black;">Front</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <textarea id="front" rows="5" style="width: 100%;" name="front" placeholder="Type text for the front card here."></textarea>
+                            </div>
+                            <div class="modal-footer">
+                                <input type="hidden" name="index" id="index">
+                                <button type="button" onclick="flip()" style="background-color: white; border: white; font-size: 2rem;"><i class="bi bi-arrow-repeat" style=""></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flip-card-back">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Back</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <textarea id="back" rows="5" style="width: 100%;" name="back" placeholder="Type text for the back card here."></textarea>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" onclick="flip()" style="background-color: white; border: white; font-size: 2rem;"><i class="bi bi-arrow-repeat"></i></button>
+                                <button type="submit" style="position: absolute; background-color: white; border: white; font-size: 2rem; left: 0;" name="modal">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </form>
+        </div>
+
+        <script>
+
+            function hide() {
+                element = document.getElementById("myform");
+                hidden = element.getAttribute("hidden");
+
+                if (hidden) {
+                    element.removeAttribute("hidden");
+                } else {
+                    element.setAttribute("hidden", "hidden");
+                }
+            }
+
+            function edit(index, front, back) {
+                document.getElementById("index").value = index
+                document.getElementById("front").value = front
+                document.getElementById("back").value = back
+            }
+
+            function flip() {
+                document.querySelector("#addcard").classList.toggle('flipped');
+            }
+        </script>
+{% endblock %}
