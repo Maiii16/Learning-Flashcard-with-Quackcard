@@ -20,3 +20,4 @@ This is a web-based application that uses Python, SQL, HTML, CSS and Javascript 
 
 **/learn**: Finally the users can learn all cards like in reality. Users select a folder and one card at a time from the first to the last card of the deck will be displayed. The card can be flipped or moved to the next or previous card if available. Users can also shuffle the deck in random order. Again button always brings the users to the top of the deck even if the cards are being shuffled. And the out button brings user back to the  field.
 # Learning-Flashcard-with-Quackcard
+# Learning-Flashcard-with-Quackcard
