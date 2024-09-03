@@ -1,4 +1,4 @@
-# Learning flashcard with Quackcard
+# Learning Flashcard with Quackcard
 
 ### Video Demo: https://youtu.be/vUJAaRFw8i8
 
